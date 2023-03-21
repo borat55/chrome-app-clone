@@ -1,5 +1,7 @@
 import React, { useState } from "react";
+import { useRecoilState } from "recoil";
 import styled from "styled-components";
+import { mainFocusState } from "../atoms";
 
 const FocusWCheckBox = styled.div`
   position: relative;
@@ -25,6 +27,10 @@ const FocusWCheckBox = styled.div`
       font-size: 45px;
       margin: 0 10px;
     }
+    del {
+      font-size: 45px;
+      margin: 0 10px;
+    }
     div {
       font-size: 18px;
     }
@@ -34,6 +40,15 @@ const FocusWCheckBox = styled.div`
 const TodaysFocus = styled.div`
   display: flex;
   align-items: center;
+  label {
+    cursor: pointer;
+  }
+  input {
+    cursor: pointer;
+  }
+  div {
+    cursor: pointer;
+  }
 `;
 
 const AskFocus = styled.div`
@@ -60,28 +75,33 @@ const AskFocus = styled.div`
 `;
 
 function FocusForToday() {
-  const [loading, setLoading] = useState(false);
-  const [focus, setFocus] = useState("");
-  const [strikethrough, setStrikethrough] = useState(false);
   const [compliment, setCompliment] = useState("");
-  const [isMouseOver, setIsMouseOver] = useState(false);
-  const [isChecked, setIsChecked] = useState(false);
-
+  const [strikethrough, setStrikethrough] = useState(false);
+  const [toSwitch, setToSwitch] = useState(false);
+  const [mainFocus, setMainFocus] = useRecoilState(mainFocusState);
   const onChange = (event: React.FormEvent<HTMLInputElement>) => {
-    setFocus(event.currentTarget.value);
+    setMainFocus(event.currentTarget.value);
   };
   const showFocus = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter" && focus !== "") {
-      setLoading(true);
+    if (event.key === "Enter" && mainFocus !== "") {
+      setToSwitch((current) => !current);
     }
   };
-
   const onChecked = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const msg = ["Nice!", "Great work!", "Good job!", "Way to go!"];
-    setIsChecked(event.target.checked);
+    const msgs = ["Nice!", "Great work!", "Good job!", "Way to go!"];
+    const msg = msgs[Math.floor(Math.random() * msgs.length)];
+    let timeleft = 5;
     if (event.target.checked) {
       setStrikethrough(true);
-      setCompliment(msg[Math.floor(Math.random() * msg.length)]);
+      const countdown = setInterval(function () {
+        if (timeleft <= 0) {
+          setCompliment("");
+          clearInterval(countdown);
+        } else {
+          setCompliment(msg);
+        }
+        timeleft -= 1;
+      }, 500);
     }
     if (!event.target.checked) {
       setStrikethrough(false);
@@ -89,43 +109,96 @@ function FocusForToday() {
     }
   };
 
-  const onMouseover = () => {
-    setIsMouseOver(true);
-  };
-  const onMouseout = () => {
-    setIsMouseOver(false);
-  };
-
   return (
-    <div style={{ display: "flex", justifyContent: "center" }}>
-      {loading ? (
+    <div>
+      {toSwitch ? (
         <FocusWCheckBox>
           <h1>TODAY</h1>
-          <TodaysFocus onMouseOver={onMouseover} onMouseOut={onMouseout}>
+          <TodaysFocus>
             <label>
-              {isMouseOver ? (
-                <input onChange={onChecked} type="checkbox" />
-              ) : null}
-
-              <h1 style={{ fontSize: 45 }}>{focus}</h1>
+              <input onChange={onChecked} type="checkbox" />
+              {strikethrough ? (
+                <del style={{ fontSize: 45 }}>{mainFocus}</del>
+              ) : (
+                <h1 style={{ fontSize: 45 }}>{mainFocus}</h1>
+              )}
             </label>
-            {isMouseOver ? <div>💬</div> : null}
+            <div>💬</div>
           </TodaysFocus>
-          <span>{strikethrough ? <h1>{compliment}</h1> : null}</span>
+          <span>{compliment}</span>
         </FocusWCheckBox>
       ) : (
         <AskFocus>
-          <h1>What is your main focus today?</h1>
-          <input
-            value={focus}
-            onChange={onChange}
-            onKeyDown={showFocus}
-            type="text"
-          />
+          <h1>What is your focus today?</h1>
+          <input onChange={onChange} onKeyDown={showFocus} type="text" />
         </AskFocus>
       )}
     </div>
   );
+  // const [loading, setLoading] = useState(false);
+  // const [focus, setFocus] = useState("");
+  // const [strikethrough, setStrikethrough] = useState(false);
+  // const [compliment, setCompliment] = useState("");
+  // const [isMouseOver, setIsMouseOver] = useState(false);
+  // const [isChecked, setIsChecked] = useState(false);
+
+  // const onChange = (event: React.FormEvent<HTMLInputElement>) => {
+  //   setFocus(event.currentTarget.value);
+  // };
+  // const showFocus = (event: React.KeyboardEvent<HTMLInputElement>) => {
+  //   if (event.key === "Enter" && focus !== "") {
+  //     setLoading(true);
+  //   }
+  // };
+  // const onChecked = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   const msg = ["Nice!", "Great work!", "Good job!", "Way to go!"];
+  //   setIsChecked(event.target.checked);
+  //   if (event.target.checked) {
+  //     setStrikethrough(true);
+  //     setCompliment(msg[Math.floor(Math.random() * msg.length)]);
+  //   }
+  //   if (!event.target.checked) {
+  //     setStrikethrough(false);
+  //     setCompliment("");
+  //   }
+  // };
+  // const onMouseover = () => {
+  //   setIsMouseOver(true);
+  // };
+  // const onMouseout = () => {
+  //   setIsMouseOver(false);
+  // };
+
+  // return (
+  //   <div style={{ display: "flex", justifyContent: "center" }}>
+  //     {loading ? (
+  //       <FocusWCheckBox>
+  // <h1>TODAY</h1>
+  // <TodaysFocus onMouseOver={onMouseover} onMouseOut={onMouseout}>
+  //   <label>
+  //     {isMouseOver ? (
+  //       <input onChange={onChecked} type="checkbox" />
+  //     ) : null}
+
+  //     <h1 style={{ fontSize: 45 }}>{focus}</h1>
+  //   </label>
+  //   {isMouseOver ? <div>💬</div> : null}
+  // </TodaysFocus>
+  // <span>{strikethrough ? <h1>{compliment}</h1> : null}</span>
+  //       </FocusWCheckBox>
+  //     ) : (
+  //       <AskFocus>
+  //         <h1>What is your main focus today?</h1>
+  //         <input
+  //           value={focus}
+  //           onChange={onChange}
+  //           onKeyDown={showFocus}
+  //           type="text"
+  //         />
+  //       </AskFocus>
+  //     )}
+  //   </div>
+  // );
 }
 
 export default FocusForToday;

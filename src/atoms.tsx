@@ -37,3 +37,8 @@ export const toDoSelector = selector({
     return toDos.filter((toDo) => toDo.category === category);
   },
 });
+
+export const mainFocusState = atom({
+  key: "mainFocus",
+  default: "",
+});
