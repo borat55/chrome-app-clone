@@ -117,9 +117,13 @@ function FocusForToday() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [mouseOver, setMouseOver] = useState(false);
 
-  const toggleMenu = () => {
+  const onClick = () => {
     setCompliment("");
-    setMenuOpen((current) => !current);
+    setMenuOpen(true);
+    setTimeout(function () {
+      setMenuOpen(false);
+      setMouseOver(false);
+    }, 5000);
   };
 
   const onChange = (event: React.FormEvent<HTMLInputElement>) => {
@@ -177,7 +181,7 @@ function FocusForToday() {
               )}
             </label>
 
-            <SpeechBubble onClick={toggleMenu} mouseOver={mouseOver}>
+            <SpeechBubble onClick={onClick} mouseOver={mouseOver}>
               💬
             </SpeechBubble>
           </TodaysFocus>

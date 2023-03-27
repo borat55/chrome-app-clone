@@ -56,7 +56,7 @@ function ToDoList() {
       style={{
         position: "absolute",
         right: "40px",
-        bottom: "25px",
+        bottom: "35px",
         display: "flex",
         flexDirection: "column",
         alignItems: "end",
