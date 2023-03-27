@@ -74,6 +74,10 @@ const AskFocus = styled.div`
   }
 `;
 
+const SpeechBubble = styled.div<{ mouseOver: boolean | undefined }>`
+  display: ${(props) => (props.mouseOver ? "block" : "none")};
+  padding: 3px;
+`;
 const HiddenMenu = styled.ul<{ menuOpen: boolean | undefined }>`
   display: flex;
   flex-direction: column;
@@ -89,7 +93,6 @@ const HiddenMenu = styled.ul<{ menuOpen: boolean | undefined }>`
   border-radius: 13px;
   padding: 10px 10px 15px 10px;
   margin: 10px;
-
   &::after {
     border-top: 0px solid transparent;
     border-left: 10px solid transparent;
@@ -112,8 +115,10 @@ function FocusForToday() {
   const [toSwitch, setToSwitch] = useState(false);
   const [mainFocus, setMainFocus] = useRecoilState(mainFocusState);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [mouseOver, setMouseOver] = useState(false);
 
   const toggleMenu = () => {
+    setCompliment("");
     setMenuOpen((current) => !current);
   };
 
@@ -131,6 +136,7 @@ function FocusForToday() {
     const msgs = ["Nice!", "Great work!", "Good job!", "Way to go!"];
     const msg = msgs[Math.floor(Math.random() * msgs.length)];
     if (event.target.checked === true) {
+      setMenuOpen(false);
       setStrikethrough(true);
       setCompliment(msg);
       setTimeout(function () {
@@ -138,8 +144,21 @@ function FocusForToday() {
       }, 3000);
     }
     if (event.target.checked === false) {
+      setMenuOpen(false);
       setCompliment("");
       setStrikethrough(false);
+    }
+  };
+
+  const onMouseOver = () => {
+    setMouseOver(true);
+  };
+  const onMouseLeave = () => {
+    if (menuOpen === true) {
+      setMouseOver(true);
+    } else {
+      setMouseOver(false);
+      setMenuOpen(false);
     }
   };
 
@@ -148,7 +167,7 @@ function FocusForToday() {
       {toSwitch ? (
         <FocusWCheckBox>
           <h1>TODAY</h1>
-          <TodaysFocus>
+          <TodaysFocus onMouseOver={onMouseOver} onMouseLeave={onMouseLeave}>
             <label>
               <input onChange={onChecked} type="checkbox" />
               {strikethrough ? (
@@ -158,7 +177,9 @@ function FocusForToday() {
               )}
             </label>
 
-            <div onClick={toggleMenu}>💬</div>
+            <SpeechBubble onClick={toggleMenu} mouseOver={mouseOver}>
+              💬
+            </SpeechBubble>
           </TodaysFocus>
           <HiddenMenu menuOpen={menuOpen}>
             <li>Delet</li>
@@ -176,13 +197,5 @@ function FocusForToday() {
     </div>
   );
 }
-
-// 이거 왜 안되지?
-// <ToggleForFocusMenu onClick={() => ToggleForFocusMenu()}>
-//   💬
-// </ToggleForFocusMenu>;
-// function ToggleForFocusMenu(props: { toogleMenu: boolean }) {
-//   return <div></div>;
-// }
 
 export default FocusForToday;
