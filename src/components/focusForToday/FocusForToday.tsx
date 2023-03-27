@@ -1,7 +1,13 @@
 import React, { useState } from "react";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import styled from "styled-components";
-import { mainFocusState } from "../../atoms";
+import {
+  focusMenuState,
+  mainFocusState,
+  switchToFocusState,
+} from "../../atoms";
+import HiddenMenu from "./hiddenMenu";
+import AskFocus from "./askFocus";
 
 const FocusWCheckBox = styled.div`
   position: relative;
@@ -51,89 +57,26 @@ const TodaysFocus = styled.div`
   }
 `;
 
-const AskFocus = styled.div`
-  position: relative;
-  bottom: -360px;
-  display: flex;
-  justify-content: center;
-  color: white;
-  -webkit-text-stroke: 0.5px #f5f5f5;
-  h1 {
-    font-size: 50px;
-  }
-  input {
-    outline: none;
-    background-color: transparent;
-    border: none;
-    border-bottom: 2px solid #f5f5f5;
-    color: white;
-    -webkit-text-stroke: 0.5px #f5f5f5;
-    font-size: 50px;
-    width: 300px;
-    margin-left: 15px;
-  }
-`;
-
 const SpeechBubble = styled.div<{ mouseOver: boolean | undefined }>`
   display: ${(props) => (props.mouseOver ? "block" : "none")};
   padding: 3px;
 `;
-const HiddenMenu = styled.ul<{ menuOpen: boolean | undefined }>`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  width: 100px;
-  height: 70px;
-  background-color: gray;
-  display: ${(props) => (props.menuOpen ? "block" : "none")};
-  position: relative;
-  bottom: 10px;
-  right: -85px;
-  transition: 1s;
-  border-radius: 13px;
-  padding: 10px 10px 15px 10px;
-  margin: 10px;
-  &::after {
-    border-top: 0px solid transparent;
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
-    border-bottom: 10px solid gray;
-    content: "";
-    position: absolute;
-    top: -10px;
-    left: 13px;
-  }
-  li {
-    cursor: pointer;
-    padding: 5px;
-  }
-`;
 
 function FocusForToday() {
+  const [menuOpen, setMenuOpen] = useRecoilState(focusMenuState);
+  const mainFocus = useRecoilValue(mainFocusState);
+  const toSwitch = useRecoilValue(switchToFocusState);
   const [compliment, setCompliment] = useState("");
   const [strikethrough, setStrikethrough] = useState(false);
-  const [toSwitch, setToSwitch] = useState(false);
-  const [mainFocus, setMainFocus] = useRecoilState(mainFocusState);
-  const [menuOpen, setMenuOpen] = useState(false);
   const [mouseOver, setMouseOver] = useState(false);
 
   const onClick = () => {
     setCompliment("");
-    setMenuOpen(true);
+    setMenuOpen((current) => !current);
     setTimeout(function () {
       setMenuOpen(false);
       setMouseOver(false);
     }, 5000);
-  };
-
-  const onChange = (event: React.FormEvent<HTMLInputElement>) => {
-    setMainFocus(event.currentTarget.value);
-  };
-
-  const showFocus = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter" && mainFocus !== "") {
-      setToSwitch((current) => !current);
-    }
   };
 
   const onChecked = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -185,18 +128,11 @@ function FocusForToday() {
               💬
             </SpeechBubble>
           </TodaysFocus>
-          <HiddenMenu menuOpen={menuOpen}>
-            <li>Delet</li>
-            <li>Edit</li>
-            <li>New Focus</li>
-          </HiddenMenu>
+          <HiddenMenu />
           <span>{compliment}</span>
         </FocusWCheckBox>
       ) : (
-        <AskFocus>
-          <h1>What is your focus today?</h1>
-          <input onChange={onChange} onKeyDown={showFocus} type="text" />
-        </AskFocus>
+        <AskFocus />
       )}
     </div>
   );

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 
 const Quote = styled.p`
+  width: 80%;
   text-align: center;
   font-size: 25px;
   position: absolute;

@@ -42,3 +42,13 @@ export const mainFocusState = atom({
   key: "mainFocus",
   default: "",
 });
+
+export const switchToFocusState = atom({
+  key: "toSwitch",
+  default: false,
+});
+
+export const focusMenuState = atom({
+  key: "focusMenu",
+  default: false,
+});
