@@ -9,7 +9,6 @@ const Bground = styled.div`
   min-height: 100vh;
   width: 100vw;
   background-image: url(https://source.unsplash.com/random/1920x1080);
-  opacity: 70%;
   position: absolute;
 `;
 
