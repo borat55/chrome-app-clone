@@ -1,16 +1,15 @@
 import { useRecoilValue } from "recoil";
 import styled from "styled-components";
 import { focusMenuState } from "../../atoms";
-import DeleteBtn from "./forDelete";
 import EditBtn from "./forEdit";
-import NewFocusBtn from "./newFocus";
+import DeleteBtn from "./forDelete";
 
 const Options = styled.ul<{ menuOpen: boolean }>`
   display: flex;
   flex-direction: column;
   justify-content: space-around;
   width: 100px;
-  height: 70px;
+  height: 50px;
   background-color: gray;
   display: ${(props) => (props.menuOpen ? "block" : "none")};
   position: relative;
@@ -30,21 +29,15 @@ const Options = styled.ul<{ menuOpen: boolean }>`
     top: -10px;
     left: 13px;
   }
-  li {
-    cursor: pointer;
-    padding: 5px;
-  }
 `;
+
 function HiddenMenu() {
   const menuOpen = useRecoilValue(focusMenuState);
   return (
-    <div>
-      <Options menuOpen={menuOpen}>
-        <DeleteBtn />
-        <EditBtn />
-        <NewFocusBtn />
-      </Options>
-    </div>
+    <Options menuOpen={menuOpen}>
+      <EditBtn />
+      <DeleteBtn />
+    </Options>
   );
 }
 

@@ -1,8 +1,8 @@
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState, useRecoilValue } from "recoil";
 import styled from "styled-components";
 import { mainFocusState, switchToFocusState } from "../../atoms";
 
-const WriteFocus = styled.div`
+export const WriteFocus = styled.div`
   position: relative;
   bottom: -360px;
   display: flex;
