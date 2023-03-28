@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import { useRecoilState, useSetRecoilState } from "recoil";
-import { mainFocusState, switchToFocusState } from "../../atoms";
+import { useSetRecoilState } from "recoil";
+import { switchToFocusState } from "../../atoms";
 
 export const List = styled.li`
   cursor: pointer;
@@ -8,9 +8,10 @@ export const List = styled.li`
 `;
 
 function EditBtn() {
-  const [editFocus, setEditFocus] = useRecoilState(mainFocusState);
   const setToSwitch = useSetRecoilState(switchToFocusState);
-  const onClick = () => {};
+  const onClick = () => {
+    setToSwitch(false);
+  };
   return <List onClick={onClick}>Edit</List>;
 }
 

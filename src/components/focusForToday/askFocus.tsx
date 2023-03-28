@@ -1,8 +1,14 @@
-import { useRecoilState, useSetRecoilState, useRecoilValue } from "recoil";
+import {
+  useRecoilState,
+  useSetRecoilState,
+  useRecoilValue,
+  DefaultValue,
+} from "recoil";
 import styled from "styled-components";
 import { mainFocusState, switchToFocusState } from "../../atoms";
+import { useForm } from "react-hook-form";
 
-export const WriteFocus = styled.div`
+const WriteFocus = styled.div`
   position: relative;
   bottom: -360px;
   display: flex;
@@ -25,22 +31,30 @@ export const WriteFocus = styled.div`
   }
 `;
 
+interface IForm {
+  focus: string;
+}
+
 function AskFocus() {
   const [mainFocus, setMainFocus] = useRecoilState(mainFocusState);
   const setToSwitch = useSetRecoilState(switchToFocusState);
-  const onChange = (event: React.FormEvent<HTMLInputElement>) => {
-    setMainFocus(event.currentTarget.value);
-  };
 
-  const showFocus = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter" && mainFocus !== "") {
-      setToSwitch((current) => !current);
-    }
+  const { register, handleSubmit } = useForm<IForm>({
+    defaultValues: {
+      focus: mainFocus,
+    },
+  });
+
+  const showFocus = (data: IForm) => {
+    setMainFocus(data.focus);
+    setToSwitch((current) => !current);
   };
   return (
     <WriteFocus>
       <h1>What is your focus today?</h1>
-      <input onChange={onChange} onKeyDown={showFocus} type="text" />
+      <form onSubmit={handleSubmit(showFocus)}>
+        <input {...register("focus", { required: true })} type="text" />
+      </form>
     </WriteFocus>
   );
 }
