@@ -98,7 +98,8 @@ function Weather() {
       getWeather(json);
       setLocation("");
     } else if (json.cod !== 200) {
-      setWarning("please enter the correct city name.");
+      getWeather(undefined);
+      setWarning("Please enter the correct city name.");
     }
   };
 
