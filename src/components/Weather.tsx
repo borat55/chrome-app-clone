@@ -85,16 +85,20 @@ interface IWeather {
 function Weather() {
   const [weather, getWeather] = useState<IWeather>();
   const [location, setLocation] = useState("");
+  const [warning, setWarning] = useState(
+    "Please enter the name of the city above."
+  );
 
   const url = `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=a95242c70cd17fc56e938050c5b774ba&units=metric`;
 
-  const searchLocation = async (
-    event: React.KeyboardEvent<HTMLInputElement>
-  ) => {
-    if (event.key === "Enter" && location !== "") {
-      const json = await (await fetch(url)).json();
+  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const json = await (await fetch(url)).json();
+    if (json.cod === 200 && location !== "") {
       getWeather(json);
       setLocation("");
+    } else if (json.cod !== 200) {
+      setWarning("please enter the correct city name.");
     }
   };
 
@@ -104,25 +108,27 @@ function Weather() {
 
   return (
     <ForecastBox>
-      <Location
-        onChange={onChange}
-        onKeyDown={searchLocation}
-        placeholder="e.g. Seoul"
-        value={location}
-        type="text"
-      />
-      {weather ? (
-        <WeatherInfo>
-          <h1>
-            {weather?.name}, {weather?.sys?.country}
-          </h1>
-          <h1>Temp : {weather?.main?.temp} °C</h1>
-          <h1>Humidity : {weather?.main?.humidity}</h1>
-          <h1>We are expecting {weather?.weather[0]?.description} today.</h1>
-        </WeatherInfo>
-      ) : (
-        <ChooseCity>Please enter the name of the city above.</ChooseCity>
-      )}
+      <form onSubmit={onSubmit}>
+        <Location
+          onChange={onChange}
+          required={true}
+          placeholder="e.g. Seoul"
+          value={location}
+          type="text"
+        />
+        {weather ? (
+          <WeatherInfo>
+            <h1>
+              {weather?.name}, {weather?.sys?.country}
+            </h1>
+            <h1>Temp : {weather?.main?.temp} °C</h1>
+            <h1>Humidity : {weather?.main?.humidity}</h1>
+            <h1>We are expecting {weather?.weather[0]?.description} today.</h1>
+          </WeatherInfo>
+        ) : (
+          <ChooseCity>{warning}</ChooseCity>
+        )}
+      </form>
     </ForecastBox>
   );
 }
