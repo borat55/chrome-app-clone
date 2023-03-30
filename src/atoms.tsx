@@ -52,3 +52,13 @@ export const focusMenuState = atom({
   key: "focusMenu",
   default: false,
 });
+
+export const strikethroughState = atom({
+  key: "strikethrough",
+  default: false,
+});
+
+export const speechBubbleState = atom({
+  key: "speechBubble",
+  default: false,
+});

@@ -5,6 +5,8 @@ import {
   focusMenuState,
   mainFocusState,
   switchToFocusState,
+  strikethroughState,
+  speechBubbleState,
 } from "../../atoms";
 import HiddenMenu from "./hiddenMenu";
 import AskFocus from "./askFocus";
@@ -66,9 +68,9 @@ function FocusForToday() {
   const [menuOpen, setMenuOpen] = useRecoilState(focusMenuState);
   const mainFocus = useRecoilValue(mainFocusState);
   const toSwitch = useRecoilValue(switchToFocusState);
+  const [strikethrough, setStrikethrough] = useRecoilState(strikethroughState);
   const [compliment, setCompliment] = useState("");
-  const [strikethrough, setStrikethrough] = useState(false);
-  const [mouseOver, setMouseOver] = useState(false);
+  const [mouseOver, setMouseOver] = useRecoilState(speechBubbleState);
 
   const onClick = () => {
     setCompliment("");
