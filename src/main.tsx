@@ -5,8 +5,6 @@ import DateYTime from "./components/DateYTime";
 import Weather from "./components/Weather";
 import QuoteForToday from "./components/Quotes";
 import FocusForToday from "./components/focusForToday/FocusForToday";
-import { randomPhotosHandler, IRandomPhoto } from "./api";
-import { useQuery } from "react-query";
 
 const Loader = styled.h1`
   height: 100%;
@@ -38,11 +36,37 @@ const BackgroundInfo = styled.div`
   }
 `;
 
-function MyDesk() {
-  const { data: randomPhoto, isLoading: loadingRandomPhoto } =
-    useQuery<IRandomPhoto>(["randomPhotos"], randomPhotosHandler);
+export interface IRandomPhoto {
+  id: string;
+  alt_description: string;
+  urls: { full: string; regular: string };
+  user: {
+    name: string;
+    links: {
+      html: string;
+    };
+  };
+}
 
-  const artistHref = `${randomPhoto?.user.links.html}?utm_source=chrome-app-clone&utm_medium=referral`;
+function MyDesk() {
+  const [randomPhotos, setRandomPhotos] = useState<IRandomPhoto | undefined>();
+  let loadingRandomPhoto = true;
+  useEffect(() => {
+    const API_KEY = process.env.REACT_APP_API_KEY;
+    const BASE_PATH = "https://api.unsplash.com";
+    async function fetchMyAPI() {
+      let response = await fetch(
+        `${BASE_PATH}/photos/random?client_id=${API_KEY}`
+      ).then((response) => response.json());
+      setRandomPhotos(response);
+    }
+    fetchMyAPI();
+  }, []);
+  if (randomPhotos !== undefined) {
+    loadingRandomPhoto = false;
+  }
+
+  const artistHref = `${randomPhotos?.user.links.html}?utm_source=chrome-app-clone&utm_medium=referral`;
   const unsplashHref =
     "https://unsplash.com/?utm_source=chrome-app-clone&utm_medium=referral";
 
@@ -53,11 +77,11 @@ function MyDesk() {
       ) : (
         <div>
           <Bground
-            photo={randomPhoto?.urls.full || randomPhoto?.urls.regular || ""}
+            photo={randomPhotos?.urls.full || randomPhotos?.urls.regular || ""}
           />
           <BackgroundInfo>
             <span>Photo by </span>
-            <a href={artistHref}>{randomPhoto?.user.name}</a>
+            <a href={artistHref}>{randomPhotos?.user.name}</a>
             <span> on </span>
             <a href={unsplashHref}>Unsplash</a>
           </BackgroundInfo>
