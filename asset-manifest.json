@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.js": "/chrome-app-clone/static/js/main.54ed8dbd.js",
+    "main.js": "/chrome-app-clone/static/js/main.48888ac9.js",
     "index.html": "/chrome-app-clone/index.html",
-    "main.54ed8dbd.js.map": "/chrome-app-clone/static/js/main.54ed8dbd.js.map"
+    "main.48888ac9.js.map": "/chrome-app-clone/static/js/main.48888ac9.js.map"
   },
   "entrypoints": [
-    "static/js/main.54ed8dbd.js"
+    "static/js/main.48888ac9.js"
   ]
 }
